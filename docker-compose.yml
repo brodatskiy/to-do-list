@@ -1,0 +1,38 @@
+services:
+    nginx:
+        image: nginx:stable
+        volumes:
+            - ./.docker/nginx/conf.d:/etc/nginx/conf.d
+            - ./:/var/www
+        ports:
+            - '${APP_PORT:-8080}:80'
+        restart: always
+        depends_on:
+            app:
+                condition: service_started
+        container_name: '${APP_NAME}_nginx'
+
+    app:
+        build:
+            context: .
+            dockerfile: .docker/app/Dockerfile
+        volumes:
+            - ./:/var/www
+        ports:
+            - '${VITE_PORT:-5173}:5173'
+        environment:
+            PHP_IDE_CONFIG: "serverName=${APP_NAME}"
+            XDEBUG_CONFIG: "idekey=PHPSTORM"
+        container_name: '${APP_NAME}_app'
+
+    db:
+        image: mysql
+        ports:
+            - '${DB_PORT:-3306}:3306'
+        restart: always
+        environment:
+            - MYSQL_USER=${DB_USERNAME}
+            - MYSQL_PASSWORD=${DB_PASSWORD}
+            - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+            - MYSQL_DATABASE=${DB_DATABASE}
+        container_name: '${APP_NAME}_db'
