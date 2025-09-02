@@ -1,5 +1,4 @@
 {
-    "$schema": "https://getcomposer.org/schema.json",
     "name": "brodatskiy/to-do-list",
     "type": "project",
     "description": "",
