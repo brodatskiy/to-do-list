@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->enum('status', TaskStatus::values())->default(TaskStatus::NotStarted);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
