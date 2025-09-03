@@ -5,6 +5,7 @@ namespace App\Enums;
 enum TaskStatus: string
 {
     use EnumToArray;
+
     case NotStarted = "Not Started";
     case InProgress = "In Progress";
     case Complete = "Complete";
@@ -14,13 +15,18 @@ enum TaskStatus: string
     {
         $transitions = [
             TaskStatus::NotStarted->value => [
+                TaskStatus::NotStarted,
                 TaskStatus::InProgress,
                 TaskStatus::OnHold,
             ], TaskStatus::InProgress->value => [
+                TaskStatus::InProgress,
                 TaskStatus::Complete,
                 TaskStatus::OnHold,
             ], TaskStatus::OnHold->value => [
+                TaskStatus::OnHold,
                 TaskStatus::InProgress,
+                TaskStatus::Complete,
+            ], TaskStatus::Complete->value => [
                 TaskStatus::Complete,
             ]
         ];
