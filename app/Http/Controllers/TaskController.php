@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\TaskStatus;
+use App\Http\Requests\StoreTaskRequest;
+use App\Http\Requests\UpdateTaskRequest;
+use App\Http\Resources\TaskResource;
 use App\Models\Task;
-use Illuminate\Http\Request;
+use Exception;
 
 class TaskController extends Controller
 {
@@ -12,38 +16,54 @@ class TaskController extends Controller
      */
     public function index()
     {
-        //
+        return TaskResource::collection(Task::all());
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreTaskRequest $request)
     {
-        //
+        $data = $request->validated();
+        $task = Task::create($data);
+
+        return new TaskResource($task);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Task $task)
+    public function show(string $id)
     {
-        //
+        $task = Task::findOrFail($id);
+
+        return new TaskResource($task);
     }
 
     /**
      * Update the specified resource in storage.
+     * @throws Exception
      */
-    public function update(Request $request, Task $task)
+    public function update(UpdateTaskRequest $request, string $id)
     {
-        //
+        $data = $request->validated();
+        $task = Task::findOrFail($id);
+        $status = $data['status'];
+        unset($data['status']);
+        $task->updateStatus(TaskStatus::from($status));
+        $task->update($data);
+
+        return new TaskResource($task);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Task $task)
+    public function destroy(string $id)
     {
-        //
+        $task = Task::findOrFail($id);
+        $task->delete();
+
+        return new TaskResource($task);
     }
 }
