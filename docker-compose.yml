@@ -21,7 +21,7 @@ services:
         ports:
             - '${VITE_PORT:-5173}:5173'
         environment:
-            PHP_IDE_CONFIG: "serverName=${APP_NAME}"
+            PHP_IDE_CONFIG: "serverName=bitrix24-rest-apt"
             XDEBUG_CONFIG: "idekey=PHPSTORM"
         container_name: '${APP_NAME}_app'
 
@@ -29,7 +29,6 @@ services:
         image: mysql
         ports:
             - '${DB_PORT:-3306}:3306'
-        restart: always
         environment:
             - MYSQL_USER=${DB_USERNAME}
             - MYSQL_PASSWORD=${DB_PASSWORD}

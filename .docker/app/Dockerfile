@@ -1,4 +1,4 @@
-FROM php:8.4-fpm
+FROM php:8.2-fpm
 
 WORKDIR /var/www
 
@@ -35,15 +35,19 @@ RUN set -eux; \
             --with-freetype; \
     docker-php-ext-install gd; \
     docker-php-ext-install pcntl; \
-    install-php-extensions redis; \
-    install-php-extensions @composer; \
-    install-php-extensions xdebug; \
-    install-php-extensions sockets; \
     php -r 'var_dump(gd_info());'
 
-# Установка nodejs
-RUN curl -fsSL https://deb.nodesource.com/setup_current.x | bash - \
-  && apt-get install -y nodejs
+RUN set -eux; \
+    install-php-extensions intl; \
+    install-php-extensions bcmath; \
+    php -r 'var_dump(gd_info());'
+
+RUN set -eux; \
+    install-php-extensions redis; \
+    install-php-extensions xdebug; \
+    install-php-extensions sockets; \
+    install-php-extensions @composer; \
+    php -r 'var_dump(gd_info());'
 
 # Добавление кастомных .ini файлов для php
 COPY /.docker/app/files/php /usr/local/etc/php
